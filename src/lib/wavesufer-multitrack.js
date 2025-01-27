@@ -1,4 +1,5 @@
 import MultiTrack from "wavesurfer-multitrack";
+import { getRandomSolidColor } from "./random";
 
 //initialize track
 export const MultiTrackInitFn = (
@@ -7,7 +8,6 @@ export const MultiTrackInitFn = (
     setMuiltiTrack = () => {},
     setIsReady = () => {},
     setPlayStatus = () => {},
-    setDropEventTrigger = () => {},
   },
   previousTracks = []
 ) => {
@@ -18,16 +18,7 @@ export const MultiTrackInitFn = (
 
   const multitrack = createMuiltiTrack(previousTracks);
 
-  //drop event on all track to change track with ease
-  multitrack.on("drop", (e) => {
-    console.log(e, "drop");
-    // setDropEventTrigger({ id });
-  });
-
-  // Set sinkId
   multitrack.once("canplay", async () => {
-    // await multitrack.setSinkId("default");
-    // console.log("Set sinkId to default");
     setIsReady(true);
   });
 
@@ -42,10 +33,9 @@ export const MultiTrackInitFn = (
 export const addToMultiTrack = ({
   multitrack,
   url,
-  id,
-  setMuiltiTrack,
-  setIsReady,
-  setPlayStatus,
+  setMuiltiTrack = () => {},
+  setIsReady = () => {},
+  setPlayStatus = () => {},
 }) => {
   if (!multitrack) throw new Error(`No multitrack found`);
   if (!url) throw new Error(`No audio url found for ${url}`);
@@ -54,14 +44,17 @@ export const addToMultiTrack = ({
     (track) => track?.id !== "placeholder" && track?.url
   );
 
+  const randomColor = getRandomSolidColor();
+
   const newTrack = {
     id: 0,
     startPosition: 0,
     url,
     draggable: true,
     options: {
-      waveColor: "hsl(25, 87%, 49%)",
-      progressColor: "hsl(25, 87%, 20%)",
+      waveColor: randomColor.mainColor,
+      progressColor: randomColor.lightColor,
+      label: "inti",
     },
   };
 
@@ -111,31 +104,24 @@ export const backwardTimeBy = ({ multitrack, isReady }, backwardBy = 30) => {
 
 //create multi track
 const createMuiltiTrack = (track = []) => {
-  const multitrack = MultiTrack.create(
-    [
-      {
-        id: 0,
-      },
-      ...track,
-    ],
-    {
-      container: document.querySelector("#audio-pill-container"), // required!
-      minPxPerSec: 10, // zoom level
-      rightButtonDrag: false, // set to true to drag with right mouse button
-      cursorWidth: 2,
-      cursorColor: "#D72F21",
-      trackBackground: "#2D2D2D",
-      trackBorderColor: "#7C7C7C",
-      dragBounds: true,
-      envelopeOptions: {
-        lineColor: "rgba(255, 0, 0, 0.7)",
-        lineWidth: 4,
-        dragPointSize: window.innerWidth < 600 ? 20 : 10,
-        dragPointFill: "rgba(255, 255, 255, 0.8)",
-        dragPointStroke: "rgba(255, 255, 255, 0.3)",
-      },
-    }
-  );
+  const trackList = !track?.length ? [{ id: 0 }] : track;
+  const multitrack = MultiTrack.create(trackList, {
+    container: document.querySelector("#audio-pill-container"), // required!
+    minPxPerSec: 10, // zoom level
+    rightButtonDrag: false, // set to true to drag with right mouse button
+    cursorWidth: 2,
+    cursorColor: "#D72F21",
+    trackBackground: "#2D2D2D",
+    trackBorderColor: "#7C7C7C",
+    dragBounds: true,
+    envelopeOptions: {
+      lineColor: "rgba(255, 0, 0, 0.7)",
+      lineWidth: 4,
+      dragPointSize: window.innerWidth < 600 ? 20 : 10,
+      dragPointFill: "rgba(255, 255, 255, 0.8)",
+      dragPointStroke: "rgba(255, 255, 255, 0.3)",
+    },
+  });
 
   return multitrack;
 };
@@ -145,3 +131,29 @@ const createMuiltiTrack = (track = []) => {
 // slider.oninput = () => {
 //   multitrack.zoom(slider.valueAsNumber);
 // };
+
+// useEffect(() => {
+//   if (isReady && multitrack) {
+//     // Target the container where WaveSurfer creates its tracks
+//     const trackContainer = document.querySelector("#audio-pill-container")
+//       ?.children[0]?.children[0];
+//     console.log(trackContainer, "track container");
+
+//     if (trackContainer) {
+//       Sortable.create(trackContainer, {
+//         animation: 150,
+//         direction: "vertical",
+//         onEnd: function (evt) {
+//           console.log(evt, "evt");
+//           // const tracks = multitrack.getTracks();
+//           // const movedTrack = tracks[evt.oldIndex];
+//           // // Remove track from old position and insert at new position
+//           // tracks.splice(evt.oldIndex, 1);
+//           // tracks.splice(evt.newIndex, 0, movedTrack);
+//           // // Update WaveSurfer's track order
+//           // multitrack.reorder(tracks);
+//         },
+//       });
+//     }
+//   }
+// }, [isReady, multitrack]);

@@ -7,13 +7,15 @@ import {
   MultiTrackInitFn,
   playPauseMultiTrack,
 } from "@/lib/wavesufer-multitrack";
+import Sortable from "sortablejs";
 import { useEffect, useMemo, useState } from "react";
+import FileDrop from "@/components/FileDrop";
 
 export default function Home() {
   const [multitrack, setMuiltiTrack] = useState(null);
-  const [dropEventTrigger, setDropEventTrigger] = useState(null);
   const [isReady, setIsReady] = useState(false);
   const [playStatus, setPlayStatus] = useState("none"); //none , playing, paused
+  const [tracks, setTracks] = useState([]);
 
   const isPlaying = useMemo(() => playStatus === "playing"[playStatus]);
   const isPaused = useMemo(() => playStatus === "paused", [playStatus]);
@@ -33,15 +35,7 @@ export default function Home() {
     };
   }, []);
 
-  //drop event triggered
-  useEffect(() => {
-    if (dropEventTrigger) {
-      // addToMultiTrack({ multitrack, url, id });
-    }
-  }, [dropEventTrigger]);
-
-  const uploadAudioTrack = async (e) => {
-    const file = e.target.files[0];
+  const uploadAudioTrack = async (file) => {
     const url = window.URL.createObjectURL(file);
     addToMultiTrack({
       multitrack,
@@ -73,23 +67,21 @@ export default function Home() {
         >
           Back 30s
         </button>
-        {/* <button className="text-center"> */}
-        <input
-          id="file_upload"
-          name="file_upload"
-          type="file"
-          className="visually-hidden"
-          accept="audio/wav, audio/mp3, audio/aac, audio/x-m4a, audio/flac, audio/ogg"
-          onChange={uploadAudioTrack}
-        />
-        Upload audio track
-        {/* </button> */}
       </div>
-
-      <div
-        id="audio-pill-container"
-        style={{ background: "#2d2d2d", color: "#fff" }}
-      ></div>
+      <FileDrop
+        onFilesAdded={(file) => {
+          uploadAudioTrack(file[0]);
+        }}
+      />
+      <section className="px-4 w-full">
+        <div
+          id="audio-pill-container"
+          style={{
+            background: "#2d2d2d",
+            color: "#fff",
+          }}
+        ></div>
+      </section>
     </main>
   );
 }
