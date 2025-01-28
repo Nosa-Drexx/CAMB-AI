@@ -63,14 +63,14 @@ export default function Home() {
               uploadAudioTrack(file[0]);
             }}
           />
-          <section className="flex px-4 w-full ">
+          <section className="flex px-4 w-full overflow-y-auto ">
             <section
               className="w-full flex"
-              style={{ maxWidth: "1050px", width: "calc(100% - 50px)" }}
+              style={{ maxWidth: "1200px", width: "calc(100% - 100px)" }}
             >
               <div
                 id="audio-pill-container"
-                className="overflow-y-auto w-full"
+                className="w-full"
                 style={{
                   background: "#2d2d2d",
                   color: "#fff",

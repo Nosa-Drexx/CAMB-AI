@@ -28,7 +28,7 @@ const CustomVerticalRange = ({
       </div>
       {showRange ? (
         <div
-          className="flex p-2 transform -rotate-90 rounded bg-black absolute"
+          className="flex p-2 transform -rotate-90 rounded bg-black absolute z-[1000]"
           style={{
             left: leftOrder,
             top: rightOrder,

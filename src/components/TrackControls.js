@@ -58,7 +58,7 @@ const TrackControls = () => {
         const volume = t?.volume * 100;
         return (
           <div
-            className="w-100 h-[130px] border-b-[2px] border-b-[#888] relative flex align-center px-2 justify-between"
+            className="w-100 h-[130px] border-b-[2px] border-b-[#888] relative flex align-center px-2 justify-between bg-[#2d2d2d]"
             key={t?.id ?? index}
           >
             <div className="w-fit h-fit my-auto">
