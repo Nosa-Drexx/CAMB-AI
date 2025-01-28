@@ -7,7 +7,7 @@ const CustomRange = ({
   onRangeUpdate = () => {},
   disabled = false,
   leftOrder = "-130%",
-  rightOrder = "-140%",
+  topOrder = "-140%",
   layout = "vertical", //vertical or horizontal
   ...props
 }) => {
@@ -32,7 +32,7 @@ const CustomRange = ({
           className="flex p-2 transform -rotate-90 rounded bg-black absolute z-[1000]"
           style={{
             left: leftOrder,
-            top: rightOrder,
+            top: topOrder,
             cursor: disabled ? "not-allowed" : "pointer",
           }}
           onMouseOver={() => setShowRange(true)}

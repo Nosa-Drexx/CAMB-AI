@@ -68,6 +68,7 @@ const TrackControls = () => {
                 value={volume}
                 onRangeUpdate={(val) => updateTrackVolume(val, t?.id)}
                 disabled={!isReady || !tracks?.length}
+                topOrder="-10%"
               >
                 {volume < 1 ? (
                   <VolumeX
