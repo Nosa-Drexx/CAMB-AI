@@ -14,18 +14,12 @@ export default function Home() {
   const { state, dispatch } = useMultitrackContext();
   const multitrack = state.multitrack;
 
-  const tracks = state.tracks;
-
   const setMultitrack = (value) => {
     dispatch({ type: "SET_MULTITRACK", payload: value });
   };
 
   const setIsReady = (value) => {
     dispatch({ type: "SET_IS_READY", payload: value });
-  };
-
-  const setPlayStatus = (value) => {
-    dispatch({ type: "SET_PLAY_STATUS", payload: value });
   };
 
   const setTracks = (value) => {
@@ -38,7 +32,6 @@ export default function Home() {
       multiTrackInit: multitrack,
       setMultitrack,
       setIsReady,
-      setPlayStatus,
       setTracks,
     });
 
@@ -55,16 +48,15 @@ export default function Home() {
       url,
       setMultitrack,
       setIsReady,
-      setPlayStatus,
       setTracks,
     });
   };
 
   return (
-    <main className="w-full multitrack-bg h-[100dvh]">
+    <main className="w-full multitrack-bg h-[100dvh] overflow-y-hidden">
       <AnimatedContainer>
         <TopNav />
-        <section className="w-full max-w-[1200px] mx-auto h-full">
+        <section className="w-full max-w-[1200px] max-h-[100dvh] mx-auto h-full">
           <FileDrop
             onFilesAdded={(file) => {
               uploadAudioTrack(file[0]);

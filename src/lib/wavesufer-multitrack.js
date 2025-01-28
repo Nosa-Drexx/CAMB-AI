@@ -3,13 +3,7 @@ import { getRandomSolidColor } from "./random";
 
 //initialize track
 export const MultiTrackInitFn = (
-  {
-    multiTrackInit,
-    setMultitrack = () => {},
-    setIsReady = () => {},
-    setPlayStatus = () => {},
-    setTracks = () => {},
-  },
+  { multiTrackInit, setMultitrack = () => {}, setIsReady = () => {} },
   previousTracks = []
 ) => {
   if (multiTrackInit) {
@@ -23,19 +17,6 @@ export const MultiTrackInitFn = (
     setIsReady(true);
   });
 
-  //play pause event
-  multitrack.on("pause", () => setPlayStatus("paused"));
-  multitrack.on("play", () => setPlayStatus("playing"));
-
-  //voluem change event
-  // multitrack.on("volume-change", ({ id, volume }) => {
-  //   const tracks = multitrack?.tracks?.map((track) => {
-  //     return track.id === id ? { ...track, volume } : track;
-  //   });
-  //   setTracks(tracks);
-  //   console.log(`Track ${id} volume updated to ${volume}`);
-  // });
-
   setMultitrack(multitrack);
 };
 
@@ -45,7 +26,6 @@ export const addToMultiTrack = ({
   url,
   setMultitrack = () => {},
   setIsReady = () => {},
-  setPlayStatus = () => {},
   setTracks = () => {},
 }) => {
   if (!multitrack) throw new Error(`No multitrack found`);
@@ -80,8 +60,6 @@ export const addToMultiTrack = ({
       multiTrackInit: multitrack,
       setMultitrack,
       setIsReady,
-      setPlayStatus,
-      setTracks,
     },
     previousTrack
   );
@@ -96,25 +74,38 @@ export const removeFromMultiTrack = ({ multitrack, id }) => {
 };
 
 //pause / play audio
-export const playPauseMultiTrack = ({ multitrack, isReady }) => {
+export const playPauseMultiTrack = ({
+  multitrack,
+  isReady,
+  setPlayStatus = () => {},
+}) => {
   if (!multitrack) throw new Error(`No multitrack found`);
   //multitrack can play event
 
-  if (isReady) multitrack.isPlaying() ? multitrack.pause() : multitrack.play();
+  if (!isReady) return;
+
+  const isPlaying = multitrack.isPlaying();
+  isPlaying ? setPlayStatus("paused") : setPlayStatus("playing");
+  isPlaying ? multitrack.pause() : multitrack.play();
 };
 
 //forward audio duration
 export const forwardTimeBy = ({ multitrack, isReady }, forwardBy = 30) => {
   if (!multitrack) throw new Error(`No multitrack found`);
-
-  if (isReady) multitrack.setTime(multitrack.getCurrentTime() + forwardBy);
+  const updateSeek = Math.min(
+    multitrack.getCurrentTime() + forwardBy,
+    multitrack.maxDuration
+  );
+  if (isReady) multitrack.setTime(updateSeek);
 };
 
 //backward audio duration
 export const backwardTimeBy = ({ multitrack, isReady }, backwardBy = 30) => {
   if (!multitrack) throw new Error(`No multitrack found`);
 
-  if (isReady) multitrack.setTime(multitrack.getCurrentTime() - backwardBy);
+  const updateSeek = Math.min(multitrack.getCurrentTime() + backwardBy, 0);
+
+  if (isReady) multitrack.setTime(updateSeek);
 };
 
 //update individual track
@@ -207,12 +198,6 @@ const createMuiltiTrack = (track = []) => {
 
   return multitrack;
 };
-
-// Zoom
-// const slider = document.querySelector('input[type="range"]');
-// slider.oninput = () => {
-//   multitrack.zoom(slider.valueAsNumber);
-// };
 
 // useEffect(() => {
 //   if (isReady && multitrack) {
