@@ -10,6 +10,16 @@ import {
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import CustomVerticalRange from "./CustomVerticalRange";
+import {
+  Play,
+  Pause,
+  FastForward,
+  Rewind,
+  ZoomIn,
+  Volume2,
+  VolumeX,
+  Volume1,
+} from "lucide-react";
 
 const MixtrackFooterControls = () => {
   const { state, dispatch } = useMultitrackContext();
@@ -61,13 +71,11 @@ const MixtrackFooterControls = () => {
         onRangeUpdate={updateZoom}
         disabled={!isReady || !tracks?.length}
       >
-        <Image
-          width={22}
-          height={22}
-          src={`/assets/icons/volume-icon-white.svg`}
-          className="transition-transform duration-200 hover:scale-110 disabled:cursor-not-allowed"
-          alt="audio-icons"
+        <ZoomIn
+          size={32}
+          color="black"
           disabled={!isReady || !tracks?.length}
+          className="transition-transform duration-200 hover:scale-110 disabled:cursor-not-allowed"
         />
       </CustomVerticalRange>
       <div className="flex gap-3">
@@ -77,7 +85,7 @@ const MixtrackFooterControls = () => {
           disabled={!isReady || !tracks?.length}
           onClick={() => backwardTimeBy({ multitrack, isReady })}
         >
-          Back 30s
+          <Rewind size={32} color="black" />
         </button>
 
         {/* Play /Pause */}
@@ -88,7 +96,11 @@ const MixtrackFooterControls = () => {
             playPauseMultiTrack({ multitrack, isReady, setPlayStatus })
           }
         >
-          {!isPlaying ? "Play" : "Pause"}
+          {!isPlaying ? (
+            <Play size={32} color="black" />
+          ) : (
+            <Pause size={32} color="black" />
+          )}
         </button>
 
         {/* Forward 30s */}
@@ -97,7 +109,7 @@ const MixtrackFooterControls = () => {
           disabled={!isReady || !tracks?.length}
           onClick={() => forwardTimeBy({ multitrack, isReady })}
         >
-          Forward 30s
+          <FastForward size={32} color="black" />
         </button>
       </div>
 
@@ -107,14 +119,28 @@ const MixtrackFooterControls = () => {
         onRangeUpdate={updateVolume}
         disabled={!isReady || !tracks?.length}
       >
-        <Image
-          width={22}
-          height={22}
-          src={`/assets/icons/volume-icon-white.svg`}
-          className="transition-transform duration-200 hover:scale-110 disabled:cursor-not-allowed"
-          alt="audio-icons"
-          disabled={!isReady || !tracks?.length}
-        />
+        {volume < 1 ? (
+          <VolumeX
+            size={32}
+            color="black"
+            disabled={!isReady || !tracks?.length}
+            className="transition-transform duration-200 hover:scale-110 disabled:cursor-not-allowed"
+          />
+        ) : volume < 50 ? (
+          <Volume1
+            size={32}
+            color="black"
+            disabled={!isReady || !tracks?.length}
+            className="transition-transform duration-200 hover:scale-110 disabled:cursor-not-allowed"
+          />
+        ) : (
+          <Volume2
+            size={32}
+            color="black"
+            disabled={!isReady || !tracks?.length}
+            className="transition-transform duration-200 hover:scale-110 disabled:cursor-not-allowed"
+          />
+        )}
       </CustomVerticalRange>
     </footer>
   );

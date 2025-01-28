@@ -28,8 +28,8 @@ const CustomVerticalRange = ({
         <div
           className="flex p-2 transform -rotate-90 rounded bg-black absolute"
           style={{
-            left: "-220%",
-            top: "-200%",
+            left: "-130%",
+            top: "-140%",
             cursor: disabled ? "not-allowed" : "pointer",
           }}
           onMouseOver={() => setShowRange(true)}
