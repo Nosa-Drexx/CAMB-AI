@@ -1,13 +1,14 @@
 "use client";
 import { useState } from "react";
 
-const CustomVerticalRange = ({
+const CustomRange = ({
   children,
   value = 0,
   onRangeUpdate = () => {},
   disabled = false,
   leftOrder = "-130%",
   rightOrder = "-140%",
+  layout = "vertical", //vertical or horizontal
   ...props
 }) => {
   const [showRange, setShowRange] = useState(false);
@@ -57,4 +58,4 @@ const CustomVerticalRange = ({
   );
 };
 
-export default CustomVerticalRange;
+export default CustomRange;

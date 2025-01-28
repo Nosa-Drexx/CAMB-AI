@@ -9,7 +9,7 @@ import {
 } from "@/lib/wavesufer-multitrack";
 import Image from "next/image";
 import { useMemo, useState } from "react";
-import CustomVerticalRange from "./CustomVerticalRange";
+import CustomRange from "./CustomRange";
 import {
   Play,
   Pause,
@@ -66,7 +66,7 @@ const MixtrackFooterControls = () => {
   return (
     <footer className="flex justify-between gap-4 fixed bottom-0 left-0 w-full glass-bg z-[1000] p-4 lg:p-6 text-[#9b5de5] font-bold">
       {/* Zoom */}
-      <CustomVerticalRange
+      <CustomRange
         value={zoom}
         onRangeUpdate={updateZoom}
         disabled={!isReady || !tracks?.length}
@@ -77,7 +77,7 @@ const MixtrackFooterControls = () => {
           disabled={!isReady || !tracks?.length}
           className="transition-transform duration-200 hover:scale-110 disabled:cursor-not-allowed"
         />
-      </CustomVerticalRange>
+      </CustomRange>
       <div className="flex gap-3">
         {/* Back 30s */}
         <button
@@ -114,7 +114,7 @@ const MixtrackFooterControls = () => {
       </div>
 
       {/* Volume */}
-      <CustomVerticalRange
+      <CustomRange
         value={volume}
         onRangeUpdate={updateVolume}
         disabled={!isReady || !tracks?.length}
@@ -141,7 +141,7 @@ const MixtrackFooterControls = () => {
             className="transition-transform duration-200 hover:scale-110 disabled:cursor-not-allowed"
           />
         )}
-      </CustomVerticalRange>
+      </CustomRange>
     </footer>
   );
 };

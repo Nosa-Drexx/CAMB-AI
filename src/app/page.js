@@ -1,19 +1,18 @@
 "use client";
 
 import { addToMultiTrack, MultiTrackInitFn } from "@/lib/wavesufer-multitrack";
-import Sortable from "sortablejs";
 import { useEffect, useMemo, useState } from "react";
 import FileDrop from "@/components/FileDrop";
 import MixtrackFooterControls from "@/components/MixtrackFoooterControls";
 import { useMultitrackContext } from "@/hooks/multitrack-hook";
 import AnimatedContainer from "@/components/AnimatedContainer";
-import ReactDOM from "react-dom";
 import TopNav from "@/components/TopNav";
 import TrackControls from "@/components/TrackControls";
 
 export default function Home() {
   const { state, dispatch } = useMultitrackContext();
   const multitrack = state.multitrack;
+  const stateTracks = state.tracks;
 
   const setMultitrack = (value) => {
     dispatch({ type: "SET_MULTITRACK", payload: value });
@@ -36,7 +35,7 @@ export default function Home() {
       setTracks,
     });
 
-    // This should be called before calling initMultiTrack again to properly clean up
+    // Multitrack   clean up
     return () => {
       if (multitrack) multitrack?.destroy();
     };
@@ -47,6 +46,7 @@ export default function Home() {
     addToMultiTrack({
       multitrack,
       url,
+      prevTracks: stateTracks,
       setMultitrack,
       setIsReady,
       setTracks,

@@ -17,6 +17,16 @@ export const MultiTrackInitFn = (
     setIsReady(true);
   });
 
+  //udate trrack volume if previous track exist
+  previousTracks.forEach((track) => {
+    updateVolume({
+      multitrack,
+      isReady: true,
+      volume: track?.volume,
+      index: track?.id,
+    });
+  });
+
   setMultitrack(multitrack);
 };
 
@@ -24,6 +34,7 @@ export const MultiTrackInitFn = (
 export const addToMultiTrack = ({
   multitrack,
   url,
+  prevTracks,
   setMultitrack = () => {},
   setIsReady = () => {},
   setTracks = () => {},
@@ -31,7 +42,7 @@ export const addToMultiTrack = ({
   if (!multitrack) throw new Error(`No multitrack found`);
   if (!url) throw new Error(`No audio url found for ${url}`);
 
-  const previousTrack = multitrack?.tracks?.filter(
+  const previousTrack = (prevTracks || multitrack?.tracks)?.filter(
     (track) => track?.id !== "placeholder" && track?.url
   );
 
@@ -68,6 +79,7 @@ export const addToMultiTrack = ({
 export const removeFromMultiTrack = ({
   multitrack,
   id,
+  prevTracks,
   setTracks = () => {},
   setMultitrack = () => {},
   setIsReady = () => {},
@@ -75,7 +87,7 @@ export const removeFromMultiTrack = ({
   if (!multitrack) throw new Error(`No multitrack found`);
   if (typeof id !== "number") throw new Error(`No track id found for ${id}`);
 
-  const filteredTracks = multitrack?.tracks?.filter(
+  const filteredTracks = (prevTracks || multitrack?.tracks)?.filter(
     (track) => track?.id !== "placeholder" && track?.url && track?.id !== id
   );
 

@@ -1,14 +1,15 @@
 import { useMultitrackContext } from "@/hooks/multitrack-hook";
 import { Trash, Volume2, VolumeX, Volume1 } from "lucide-react";
-import CustomVerticalRange from "./CustomVerticalRange";
+import CustomRange from "./CustomRange";
 import { removeFromMultiTrack, updateVolume } from "@/lib/wavesufer-multitrack";
 
 const TrackControls = () => {
   const { state, dispatch } = useMultitrackContext();
   const isReady = state.isReady;
   const multitrack = state.multitrack;
+  const stateTracks = state.tracks;
 
-  const tracks = state.tracks.filter((t) => {
+  const tracks = stateTracks.filter((t) => {
     return t.id !== "placeholder";
   });
 
@@ -41,6 +42,7 @@ const TrackControls = () => {
     removeFromMultiTrack({
       multitrack,
       id,
+      prevTracks: stateTracks,
       setTracks,
       setMultitrack,
       setIsReady,
@@ -62,7 +64,7 @@ const TrackControls = () => {
             key={t?.id ?? index}
           >
             <div className="w-fit h-fit my-auto">
-              <CustomVerticalRange
+              <CustomRange
                 value={volume}
                 onRangeUpdate={(val) => updateTrackVolume(val, t?.id)}
                 disabled={!isReady || !tracks?.length}
@@ -89,7 +91,7 @@ const TrackControls = () => {
                     className="transition-transform duration-200 hover:scale-110 disabled:cursor-not-allowed"
                   />
                 )}
-              </CustomVerticalRange>
+              </CustomRange>
             </div>
             <div className="w-fit h-fit my-auto">
               <button
