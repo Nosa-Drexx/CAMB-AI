@@ -73,7 +73,7 @@ export const removeFromMultiTrack = ({
   setIsReady = () => {},
 }) => {
   if (!multitrack) throw new Error(`No multitrack found`);
-  if (!id) throw new Error(`No track id found for ${id}`);
+  if (typeof id !== "number") throw new Error(`No track id found for ${id}`);
 
   const filteredTracks = multitrack?.tracks?.filter(
     (track) => track?.id !== "placeholder" && track?.url && track?.id !== id
@@ -134,6 +134,7 @@ export const updateVolume = ({
   volume = 1,
   index = 0,
   multiTrackList,
+  stateTrackList,
   setTracks = () => {},
   updateState = true,
 }) => {
@@ -149,9 +150,9 @@ export const updateVolume = ({
 
   multitrack?.setTrackVolume(index, volume);
 
-  if (!updateState) return;
+  if (!updateState || !stateTrackList) return;
 
-  const tracks = multitrack?.tracks?.map((track) => {
+  const tracks = stateTrackList?.map((track) => {
     return track.id === index ? { ...track, volume } : track;
   });
 

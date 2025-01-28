@@ -1,14 +1,5 @@
 import { useMultitrackContext } from "@/hooks/multitrack-hook";
-import {
-  Play,
-  Pause,
-  FastForward,
-  Rewind,
-  ZoomIn,
-  Volume2,
-  VolumeX,
-  Volume1,
-} from "lucide-react";
+import { Trash, Volume2, VolumeX, Volume1 } from "lucide-react";
 import CustomVerticalRange from "./CustomVerticalRange";
 import { removeFromMultiTrack, updateVolume } from "@/lib/wavesufer-multitrack";
 
@@ -42,6 +33,7 @@ const TrackControls = () => {
       setTracks,
       index,
       updateState: true,
+      stateTrackList: state?.tracks,
     });
   };
 
@@ -54,7 +46,11 @@ const TrackControls = () => {
       setIsReady,
     });
   };
-  console.log(tracks, "tracks");
+
+  const handleDeleteTrack = (t) => {
+    if (window.confirm("Are you sure you want to remove this track?"))
+      removeTrack(t?.id);
+  };
 
   return (
     <>
@@ -94,6 +90,19 @@ const TrackControls = () => {
                   />
                 )}
               </CustomVerticalRange>
+            </div>
+            <div className="w-fit h-fit my-auto">
+              <button
+                onClick={() => handleDeleteTrack(t)}
+                disabled={!isReady || !tracks?.length}
+              >
+                <Trash
+                  size={29}
+                  color="white"
+                  className="transition-transform duration-200 hover:scale-110 disabled:cursor-not-allowed"
+                  disabled={!isReady || !tracks?.length}
+                />
+              </button>
             </div>
           </div>
         );
