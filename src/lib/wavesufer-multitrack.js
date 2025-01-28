@@ -102,17 +102,50 @@ export const backwardTimeBy = ({ multitrack, isReady }, backwardBy = 30) => {
   if (isReady) multitrack.setTime(multitrack.getCurrentTime() - backwardBy);
 };
 
-export const updateVolumeAll = ({ multitrack, isReady, volume = 100 }) => {
+//update individual track
+export const updateVolume = ({
+  multitrack,
+  isReady,
+  volume = 1,
+  index = 0,
+  multiTrackList,
+}) => {
   if (!multitrack) throw new Error(`No multitrack found`);
+  const multitrackTracks =
+    multiTrackList ||
+    multitrack?.tracks?.filter(
+      (track) => track?.id !== "placeholder" && track?.url
+    );
+
+  if (!isReady) return;
+  if (!multitrackTracks[index]) return;
+
+  multitrack?.setTrackVolume(index, volume);
+};
+
+//update all track
+export const updateVolumeAll = ({ multitrack, isReady, volume = 1 }) => {
+  if (!multitrack) throw new Error(`No multitrack found`);
+
   const multitrackTracks = multitrack?.tracks?.filter(
     (track) => track?.id !== "placeholder" && track?.url
   );
 
-  if (!isReady) return;
-
   multitrackTracks.forEach((element, index) => {
-    multitrack.setTrackVolume(index, volume);
+    updateVolume({
+      multitrack,
+      isReady,
+      volume,
+      index,
+      multiTrackList: multitrackTracks,
+    });
   });
+};
+
+export const zoomTrack = ({ multitrack, isReady, zoomBy = 10 }) => {
+  if (!multitrack) throw new Error(`No multitrack found`);
+  if (!isReady) return;
+  multitrack.zoom(zoomBy);
 };
 
 //create multi track

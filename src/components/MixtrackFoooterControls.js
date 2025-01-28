@@ -5,9 +5,11 @@ import {
   forwardTimeBy,
   playPauseMultiTrack,
   updateVolumeAll,
+  zoomTrack,
 } from "@/lib/wavesufer-multitrack";
 import Image from "next/image";
 import { useMemo, useState } from "react";
+import CustomVerticalRange from "./CustomVerticalRange";
 
 const MixtrackFooterControls = () => {
   const { state, dispatch } = useMultitrackContext();
@@ -16,22 +18,35 @@ const MixtrackFooterControls = () => {
   const playStatus = state.playStatus;
 
   const [showVolume, setShowVolume] = useState(false);
-  const [volume, setVolume] = useState(0.5);
+  const [volume, setVolume] = useState(100);
+  const [zoom, setZoom] = useState(50);
 
   const isPlaying = useMemo(() => playStatus === "playing"[playStatus]);
   const isPaused = useMemo(() => playStatus === "paused", [playStatus]);
 
-  const updateVolume = (event) => {
-    const rangeValue = event.target.valueAsNumber;
-    // const player = playerRef.current.audio.current;
-    // player.volume = rangeValue / 100;
+  const updateVolume = (value) => {
+    const rangeValue = value;
     updateVolumeAll({ multitrack, isReady, volume: rangeValue / 100 });
     setVolume(rangeValue);
+  };
+  const updateZoom = (value) => {
+    const rangeValue = value;
+    zoomTrack({ multitrack, isReady, zoomBy: rangeValue });
+    setZoom(rangeValue);
   };
 
   return (
     <footer className="flex justify-between gap-4 fixed bottom-0 left-0 w-full glass-bg z-[1000] p-4 lg:p-6 text-[#9b5de5] font-bold">
-      <div></div>
+      {/* Zoom */}
+      <CustomVerticalRange value={zoom} onRangeUpdate={updateZoom}>
+        <Image
+          width={22}
+          height={22}
+          src={`/assets/icons/volume-icon-white.svg`}
+          className="transition-transform duration-200 hover:scale-110"
+          alt="audio-icons"
+        />
+      </CustomVerticalRange>
       <div className="flex gap-3">
         {/* Back 30s */}
         <button
@@ -58,37 +73,16 @@ const MixtrackFooterControls = () => {
         </button>
       </div>
 
-      {/* Zoom */}
-      <div className="relative">
+      {/* Volume */}
+      <CustomVerticalRange value={volume} onRangeUpdate={updateVolume}>
         <Image
           width={22}
           height={22}
           src={`/assets/icons/volume-icon-white.svg`}
-          onMouseLeave={() => setShowVolume(false)}
-          onMouseEnter={() => setShowVolume(true)}
           className="transition-transform duration-200 hover:scale-110"
           alt="audio-icons"
         />
-        {showVolume ? (
-          <div
-            className="flex p-2 transform -rotate-90 rounded bg-black absolute"
-            style={{ left: "-220%", top: "-200%" }}
-            onMouseOver={() => setShowVolume(true)}
-            onMouseOut={() => setShowVolume(false)}
-          >
-            <input
-              type={"range"}
-              min="0"
-              max="100"
-              value={volume}
-              onChange={updateVolume}
-              className="accent-[#5b33ab] cursor-pointer w-[100px] m-auto"
-            />
-          </div>
-        ) : (
-          <></>
-        )}
-      </div>
+      </CustomVerticalRange>
     </footer>
   );
 };
