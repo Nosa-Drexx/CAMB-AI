@@ -38,14 +38,13 @@ export const addToMultiTrack = ({
   const randomColor = getRandomSolidColor();
 
   const newTrack = {
-    id: 0,
+    id: previousTrack?.length || 0,
     startPosition: 0,
     url,
     draggable: true,
     options: {
       waveColor: randomColor.mainColor,
       progressColor: randomColor.lightColor,
-      label: "inti",
     },
     volume: 1,
   };
@@ -135,6 +134,8 @@ export const updateVolume = ({
   const tracks = multitrack?.tracks?.map((track) => {
     return track.id === id ? { ...track, volume } : track;
   });
+
+  setTracks(tracks);
 };
 
 //update all track

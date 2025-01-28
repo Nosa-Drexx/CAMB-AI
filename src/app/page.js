@@ -69,7 +69,7 @@ export default function Home() {
               style={{
                 background: "#2d2d2d",
                 color: "#fff",
-                maxHeight: "calc(100vh - 356px)",
+                maxHeight: "calc(100vh - 370px)",
               }}
             ></div>
           </section>
