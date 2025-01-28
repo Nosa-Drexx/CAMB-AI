@@ -8,6 +8,7 @@ export const MultiTrackInitFn = (
     setMultitrack = () => {},
     setIsReady = () => {},
     setPlayStatus = () => {},
+    setTracks = () => {},
   },
   previousTracks = []
 ) => {
@@ -26,6 +27,15 @@ export const MultiTrackInitFn = (
   multitrack.on("pause", () => setPlayStatus("paused"));
   multitrack.on("play", () => setPlayStatus("playing"));
 
+  //voluem change event
+  // multitrack.on("volume-change", ({ id, volume }) => {
+  //   const tracks = multitrack?.tracks?.map((track) => {
+  //     return track.id === id ? { ...track, volume } : track;
+  //   });
+  //   setTracks(tracks);
+  //   console.log(`Track ${id} volume updated to ${volume}`);
+  // });
+
   setMultitrack(multitrack);
 };
 
@@ -36,6 +46,7 @@ export const addToMultiTrack = ({
   setMultitrack = () => {},
   setIsReady = () => {},
   setPlayStatus = () => {},
+  setTracks = () => {},
 }) => {
   if (!multitrack) throw new Error(`No multitrack found`);
   if (!url) throw new Error(`No audio url found for ${url}`);
@@ -56,9 +67,12 @@ export const addToMultiTrack = ({
       progressColor: randomColor.lightColor,
       label: "inti",
     },
+    volume: 1,
   };
 
   previousTrack.push(newTrack);
+
+  setTracks(previousTrack);
 
   //reintitalize multi-track with new track.
   MultiTrackInitFn(
@@ -67,6 +81,7 @@ export const addToMultiTrack = ({
       setMultitrack,
       setIsReady,
       setPlayStatus,
+      setTracks,
     },
     previousTrack
   );
@@ -109,6 +124,8 @@ export const updateVolume = ({
   volume = 1,
   index = 0,
   multiTrackList,
+  setTracks = () => {},
+  updateState = true,
 }) => {
   if (!multitrack) throw new Error(`No multitrack found`);
   const multitrackTracks =
@@ -121,10 +138,21 @@ export const updateVolume = ({
   if (!multitrackTracks[index]) return;
 
   multitrack?.setTrackVolume(index, volume);
+
+  if (!updateState) return;
+
+  const tracks = multitrack?.tracks?.map((track) => {
+    return track.id === id ? { ...track, volume } : track;
+  });
 };
 
 //update all track
-export const updateVolumeAll = ({ multitrack, isReady, volume = 1 }) => {
+export const updateVolumeAll = ({
+  multitrack,
+  isReady,
+  volume = 1,
+  setTracks = () => {},
+}) => {
   if (!multitrack) throw new Error(`No multitrack found`);
 
   const multitrackTracks = multitrack?.tracks?.filter(
@@ -138,8 +166,16 @@ export const updateVolumeAll = ({ multitrack, isReady, volume = 1 }) => {
       volume,
       index,
       multiTrackList: multitrackTracks,
+      updateState: false,
+      setTracks,
     });
   });
+
+  const tracks = multitrack?.tracks?.map((track) => {
+    return { ...track, volume };
+  });
+
+  setTracks(tracks);
 };
 
 export const zoomTrack = ({ multitrack, isReady, zoomBy = 10 }) => {

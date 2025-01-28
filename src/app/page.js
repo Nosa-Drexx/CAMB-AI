@@ -39,6 +39,7 @@ export default function Home() {
       setMultitrack,
       setIsReady,
       setPlayStatus,
+      setTracks,
     });
 
     // This should be called before calling initMultiTrack again to properly clean up
@@ -55,10 +56,9 @@ export default function Home() {
       setMultitrack,
       setIsReady,
       setPlayStatus,
+      setTracks,
     });
   };
-
-  useEffect(() => {});
 
   return (
     <main className="w-full multitrack-bg h-[100dvh]">

@@ -17,16 +17,23 @@ const MixtrackFooterControls = () => {
   const isReady = state.isReady;
   const playStatus = state.playStatus;
 
-  const [showVolume, setShowVolume] = useState(false);
   const [volume, setVolume] = useState(100);
   const [zoom, setZoom] = useState(50);
 
   const isPlaying = useMemo(() => playStatus === "playing"[playStatus]);
-  const isPaused = useMemo(() => playStatus === "paused", [playStatus]);
+
+  const setTracks = (value) => {
+    dispatch({ type: "SET_TRACKS", payload: value });
+  };
 
   const updateVolume = (value) => {
     const rangeValue = value;
-    updateVolumeAll({ multitrack, isReady, volume: rangeValue / 100 });
+    updateVolumeAll({
+      multitrack,
+      isReady,
+      volume: rangeValue / 100,
+      setTracks,
+    });
     setVolume(rangeValue);
   };
   const updateZoom = (value) => {
