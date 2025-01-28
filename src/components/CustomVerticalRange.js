@@ -6,6 +6,8 @@ const CustomVerticalRange = ({
   value = 0,
   onRangeUpdate = () => {},
   disabled = false,
+  leftOrder = "-130%",
+  rightOrder = "-140%",
   ...props
 }) => {
   const [showRange, setShowRange] = useState(false);
@@ -17,7 +19,7 @@ const CustomVerticalRange = ({
   };
 
   return (
-    <div className="relative">
+    <div className="relative h-fit w-fit">
       <div
         onMouseLeave={() => setShowRange(false)}
         onMouseEnter={() => setShowRange(true)}
@@ -28,8 +30,8 @@ const CustomVerticalRange = ({
         <div
           className="flex p-2 transform -rotate-90 rounded bg-black absolute"
           style={{
-            left: "-130%",
-            top: "-140%",
+            left: leftOrder,
+            top: rightOrder,
             cursor: disabled ? "not-allowed" : "pointer",
           }}
           onMouseOver={() => setShowRange(true)}

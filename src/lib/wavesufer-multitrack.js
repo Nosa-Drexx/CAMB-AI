@@ -65,11 +65,31 @@ export const addToMultiTrack = ({
 };
 
 //remove track
-export const removeFromMultiTrack = ({ multitrack, id }) => {
+export const removeFromMultiTrack = ({
+  multitrack,
+  id,
+  setTracks = () => {},
+  setMultitrack = () => {},
+  setIsReady = () => {},
+}) => {
   if (!multitrack) throw new Error(`No multitrack found`);
   if (!id) throw new Error(`No track id found for ${id}`);
 
-  multitrack.removeTrack(id);
+  const filteredTracks = multitrack?.tracks?.filter(
+    (track) => track?.id !== "placeholder" && track?.url && track?.id !== id
+  );
+
+  setTracks(filteredTracks);
+
+  //reintitalize multi-track without removed track.
+  MultiTrackInitFn(
+    {
+      multiTrackInit: multitrack,
+      setMultitrack,
+      setIsReady,
+    },
+    filteredTracks
+  );
 };
 
 //pause / play audio
@@ -132,7 +152,7 @@ export const updateVolume = ({
   if (!updateState) return;
 
   const tracks = multitrack?.tracks?.map((track) => {
-    return track.id === id ? { ...track, volume } : track;
+    return track.id === index ? { ...track, volume } : track;
   });
 
   setTracks(tracks);

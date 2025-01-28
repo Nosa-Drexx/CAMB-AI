@@ -9,6 +9,7 @@ import { useMultitrackContext } from "@/hooks/multitrack-hook";
 import AnimatedContainer from "@/components/AnimatedContainer";
 import ReactDOM from "react-dom";
 import TopNav from "@/components/TopNav";
+import TrackControls from "@/components/TrackControls";
 
 export default function Home() {
   const { state, dispatch } = useMultitrackContext();
@@ -62,16 +63,31 @@ export default function Home() {
               uploadAudioTrack(file[0]);
             }}
           />
-          <section className="px-4 w-full">
+          <section className="flex px-4 w-full ">
+            <section
+              className="w-full flex"
+              style={{ maxWidth: "1050px", width: "calc(100% - 50px)" }}
+            >
+              <div
+                id="audio-pill-container"
+                className="overflow-y-auto w-full"
+                style={{
+                  background: "#2d2d2d",
+                  color: "#fff",
+                  maxHeight: "calc(100vh - 370px)",
+                }}
+              ></div>
+            </section>
             <div
-              id="audio-pill-container"
-              className="overflow-y-auto"
               style={{
                 background: "#2d2d2d",
                 color: "#fff",
                 maxHeight: "calc(100vh - 370px)",
+                width: "100px",
               }}
-            ></div>
+            >
+              <TrackControls />
+            </div>
           </section>
 
           <MixtrackFooterControls />
