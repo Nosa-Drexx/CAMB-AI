@@ -25,7 +25,7 @@ const FileDrop = ({
     <div className="p-4">
       <div
         {...getRootProps()}
-        className={`w-full h-40 border-2 border-dashed rounded-lg flex items-center justify-center text-gray-600 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer ${
+        className={`w-full h-[160px] border-2 border-dashed rounded-lg flex items-center justify-center text-gray-600 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer ${
           isDragActive ? "bg-green-100 border-green-300" : ""
         }`}
       >

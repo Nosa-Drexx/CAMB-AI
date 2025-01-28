@@ -14,8 +14,65 @@
   }
 }
 
+@keyframes background-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.animated-bg-container {
+  transition: background-color 10s;
+  background-size: 400% 400%;
+  animation: background-gradient 10s ease infinite;
+}
+
+.glass-bg {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.7);
+}
+
+.glass-bg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.2)
+  );
+  z-index: -1;
+}
+
+@supports (backdrop-filter: blur(20px)) or (-webkit-backdrop-filter: blur(20px)) {
+  .glass-bg {
+    background: none;
+  }
+}
+
+/* override timeline style */
+
+div[part="timeline-wrapper"] {
+  position: fixed;
+  top: 195px; /* pixel relative to page */
+  z-index: 1000;
+  width: inherit;
+  font-weight: bold;
+  max-width: 1500px;
 }

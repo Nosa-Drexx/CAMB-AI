@@ -5,7 +5,7 @@ import { getRandomSolidColor } from "./random";
 export const MultiTrackInitFn = (
   {
     multiTrackInit,
-    setMuiltiTrack = () => {},
+    setMultitrack = () => {},
     setIsReady = () => {},
     setPlayStatus = () => {},
   },
@@ -26,14 +26,14 @@ export const MultiTrackInitFn = (
   multitrack.on("pause", () => setPlayStatus("paused"));
   multitrack.on("play", () => setPlayStatus("playing"));
 
-  setMuiltiTrack(multitrack);
+  setMultitrack(multitrack);
 };
 
 //add audio track
 export const addToMultiTrack = ({
   multitrack,
   url,
-  setMuiltiTrack = () => {},
+  setMultitrack = () => {},
   setIsReady = () => {},
   setPlayStatus = () => {},
 }) => {
@@ -64,7 +64,7 @@ export const addToMultiTrack = ({
   MultiTrackInitFn(
     {
       multiTrackInit: multitrack,
-      setMuiltiTrack,
+      setMultitrack,
       setIsReady,
       setPlayStatus,
     },

@@ -1,30 +1,41 @@
 "use client";
 
-import {
-  addToMultiTrack,
-  backwardTimeBy,
-  forwardTimeBy,
-  MultiTrackInitFn,
-  playPauseMultiTrack,
-} from "@/lib/wavesufer-multitrack";
+import { addToMultiTrack, MultiTrackInitFn } from "@/lib/wavesufer-multitrack";
 import Sortable from "sortablejs";
 import { useEffect, useMemo, useState } from "react";
 import FileDrop from "@/components/FileDrop";
+import MixtrackFooterControls from "@/components/MixtrackFoooterControls";
+import { useMultitrackContext } from "@/hooks/multitrack-hook";
+import AnimatedContainer from "@/components/AnimatedContainer";
+import ReactDOM from "react-dom";
 
 export default function Home() {
-  const [multitrack, setMuiltiTrack] = useState(null);
-  const [isReady, setIsReady] = useState(false);
-  const [playStatus, setPlayStatus] = useState("none"); //none , playing, paused
-  const [tracks, setTracks] = useState([]);
+  const { state, dispatch } = useMultitrackContext();
+  const multitrack = state.multitrack;
 
-  const isPlaying = useMemo(() => playStatus === "playing"[playStatus]);
-  const isPaused = useMemo(() => playStatus === "paused", [playStatus]);
+  const tracks = state.tracks;
+
+  const setMultitrack = (value) => {
+    dispatch({ type: "SET_MULTITRACK", payload: value });
+  };
+
+  const setIsReady = (value) => {
+    dispatch({ type: "SET_IS_READY", payload: value });
+  };
+
+  const setPlayStatus = (value) => {
+    dispatch({ type: "SET_PLAY_STATUS", payload: value });
+  };
+
+  const setTracks = (value) => {
+    dispatch({ type: "SET_TRACKS", payload: value });
+  };
 
   //initiallize multitrack
   useEffect(() => {
     MultiTrackInitFn({
       multiTrackInit: multitrack,
-      setMuiltiTrack,
+      setMultitrack,
       setIsReady,
       setPlayStatus,
     });
@@ -40,48 +51,38 @@ export default function Home() {
     addToMultiTrack({
       multitrack,
       url,
-      setMuiltiTrack,
+      setMultitrack,
       setIsReady,
       setPlayStatus,
     });
   };
 
+  useEffect(() => {});
+
   return (
-    <main>
-      <div style={{ margin: "2em 0" }}>
-        <button
-          disabled={!isReady}
-          onClick={() => playPauseMultiTrack({ multitrack, isReady })}
-        >
-          {!isPlaying ? "Play" : "Pause"}
-        </button>
-        <button
-          disabled={!isReady}
-          onClick={() => forwardTimeBy({ multitrack, isReady })}
-        >
-          Forward 30s
-        </button>
-        <button
-          disabled={!isReady}
-          onClick={() => backwardTimeBy({ multitrack, isReady })}
-        >
-          Back 30s
-        </button>
-      </div>
-      <FileDrop
-        onFilesAdded={(file) => {
-          uploadAudioTrack(file[0]);
-        }}
-      />
-      <section className="px-4 w-full">
-        <div
-          id="audio-pill-container"
-          style={{
-            background: "#2d2d2d",
-            color: "#fff",
-          }}
-        ></div>
-      </section>
+    <main className="w-full multitrack-bg h-[100dvh]">
+      <AnimatedContainer>
+        <section className="w-full max-w-[1200px] mx-auto h-full">
+          <FileDrop
+            onFilesAdded={(file) => {
+              uploadAudioTrack(file[0]);
+            }}
+          />
+          <section className="px-4 w-full">
+            <div
+              id="audio-pill-container"
+              className="overflow-y-auto"
+              style={{
+                background: "#2d2d2d",
+                color: "#fff",
+                maxHeight: "calc(100vh - 280px)",
+              }}
+            ></div>
+          </section>
+
+          <MixtrackFooterControls />
+        </section>
+      </AnimatedContainer>
     </main>
   );
 }
