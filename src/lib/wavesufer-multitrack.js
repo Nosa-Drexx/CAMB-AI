@@ -102,6 +102,19 @@ export const backwardTimeBy = ({ multitrack, isReady }, backwardBy = 30) => {
   if (isReady) multitrack.setTime(multitrack.getCurrentTime() - backwardBy);
 };
 
+export const updateVolumeAll = ({ multitrack, isReady, volume = 100 }) => {
+  if (!multitrack) throw new Error(`No multitrack found`);
+  const multitrackTracks = multitrack?.tracks?.filter(
+    (track) => track?.id !== "placeholder" && track?.url
+  );
+
+  if (!isReady) return;
+
+  multitrackTracks.forEach((element, index) => {
+    multitrack.setTrackVolume(index, volume);
+  });
+};
+
 //create multi track
 const createMuiltiTrack = (track = []) => {
   const trackList = !track?.length ? [{ id: 0 }] : track;

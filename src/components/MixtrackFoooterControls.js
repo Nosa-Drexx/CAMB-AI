@@ -4,6 +4,7 @@ import {
   backwardTimeBy,
   forwardTimeBy,
   playPauseMultiTrack,
+  updateVolumeAll,
 } from "@/lib/wavesufer-multitrack";
 import Image from "next/image";
 import { useMemo, useState } from "react";
@@ -21,9 +22,10 @@ const MixtrackFooterControls = () => {
   const isPaused = useMemo(() => playStatus === "paused", [playStatus]);
 
   const updateVolume = (event) => {
-    const rangeValue = event.target.value;
+    const rangeValue = event.target.valueAsNumber;
     // const player = playerRef.current.audio.current;
     // player.volume = rangeValue / 100;
+    updateVolumeAll({ multitrack, isReady, volume: rangeValue / 100 });
     setVolume(rangeValue);
   };
 

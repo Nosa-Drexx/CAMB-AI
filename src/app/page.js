@@ -8,6 +8,7 @@ import MixtrackFooterControls from "@/components/MixtrackFoooterControls";
 import { useMultitrackContext } from "@/hooks/multitrack-hook";
 import AnimatedContainer from "@/components/AnimatedContainer";
 import ReactDOM from "react-dom";
+import TopNav from "@/components/TopNav";
 
 export default function Home() {
   const { state, dispatch } = useMultitrackContext();
@@ -62,6 +63,7 @@ export default function Home() {
   return (
     <main className="w-full multitrack-bg h-[100dvh]">
       <AnimatedContainer>
+        <TopNav />
         <section className="w-full max-w-[1200px] mx-auto h-full">
           <FileDrop
             onFilesAdded={(file) => {
@@ -75,7 +77,7 @@ export default function Home() {
               style={{
                 background: "#2d2d2d",
                 color: "#fff",
-                maxHeight: "calc(100vh - 280px)",
+                maxHeight: "calc(100vh - 356px)",
               }}
             ></div>
           </section>
