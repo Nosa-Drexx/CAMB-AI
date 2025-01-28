@@ -81,7 +81,7 @@ const MixtrackFooterControls = () => {
       <div className="flex gap-3">
         {/* Back 30s */}
         <button
-          className="disabled:cursor-not-allowed"
+          className="disabled:cursor-not-allowed transition-transform duration-200 hover:scale-110"
           disabled={!isReady || !tracks?.length}
           onClick={() => backwardTimeBy({ multitrack, isReady })}
         >
@@ -90,7 +90,7 @@ const MixtrackFooterControls = () => {
 
         {/* Play /Pause */}
         <button
-          className="disabled:cursor-not-allowed"
+          className="disabled:cursor-not-allowed transition-transform duration-200 hover:scale-110"
           disabled={!isReady || !tracks?.length}
           onClick={() =>
             playPauseMultiTrack({ multitrack, isReady, setPlayStatus })
@@ -105,7 +105,7 @@ const MixtrackFooterControls = () => {
 
         {/* Forward 30s */}
         <button
-          className="disabled:cursor-not-allowed"
+          className="disabled:cursor-not-allowed transition-transform duration-200 hover:scale-110"
           disabled={!isReady || !tracks?.length}
           onClick={() => forwardTimeBy({ multitrack, isReady })}
         >

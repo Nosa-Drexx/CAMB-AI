@@ -7,6 +7,7 @@ const FileDrop = ({
     "audio/aac": [".aac"],
     "audio/ogg": [".ogg"],
   },
+  acceptType = "audio",
   multiple = false,
   onFilesAdded,
 }) => {
@@ -33,7 +34,10 @@ const FileDrop = ({
         {isDragActive ? (
           <p>Drop your files here...</p>
         ) : (
-          <p>Drag & drop files here, or click to select files</p>
+          <p>
+            Drag & drop {acceptType} files in format{" "}
+            {Object.values(accept)?.join(", ")} or click to select
+          </p>
         )}
       </div>
     </div>
