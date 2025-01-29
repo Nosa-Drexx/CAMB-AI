@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "Mix Track",
   description: "Mix Track is an audio mixing tool",
+  icons: {
+    icon: "/vercel.svg",
+  },
 };
 
 export default function RootLayout({ children }) {
