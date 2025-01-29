@@ -1,7 +1,7 @@
 "use client";
 
 import { addToMultiTrack, MultiTrackInitFn } from "@/lib/wavesufer-multitrack";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect } from "react";
 import FileDrop from "@/components/FileDrop";
 import MixtrackFooterControls from "@/components/MixtrackFoooterControls";
 import { useMultitrackContext } from "@/hooks/multitrack-hook";

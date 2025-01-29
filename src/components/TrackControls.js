@@ -1,4 +1,5 @@
 "use client";
+import dynamic from "next/dynamic";
 import { useMultitrackContext } from "@/hooks/multitrack-hook";
 import { Trash, Volume2, VolumeX, Volume1, GripVertical } from "lucide-react";
 import CustomRange from "./CustomRange";
@@ -8,7 +9,7 @@ import {
   updateVolume,
 } from "@/lib/wavesufer-multitrack";
 import { useEffect, useRef, useState } from "react";
-import dragula from "dragula";
+const dragula = dynamic(() => import("dragula"), { ssr: false });
 import "dragula/dist/dragula.css";
 
 const TrackControls = () => {
@@ -18,6 +19,33 @@ const TrackControls = () => {
   const stateTracks = state.tracks;
   const containerRef = useRef(null);
   const [reOrderTrackElem, setReorderTrackElement] = useState([]);
+  const [dragulaInstance, setDragulaInstance] = useState(null);
+
+  //initialize dragula
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      import("dragula").then((dragula) => {
+        setDragulaInstance(() => dragula.default); // Store the function reference
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (containerRef.current && dragulaInstance) {
+      const drake = dragulaInstance([containerRef.current], {
+        direction: "vertical", // Enforce vertical movement
+        moves: (el, container, handle) => {
+          return handle.classList.contains("drag-handle"); // Only allow dragging from handle
+        },
+      });
+
+      drake.on("drop", (el, target, source, sibling) => {
+        setReorderTrackElement(Array.from(target.children));
+      });
+
+      return () => drake.destroy();
+    }
+  }, [dragulaInstance, stateTracks]);
 
   const tracks = stateTracks.filter((t) => {
     return t.id !== "placeholder";
@@ -68,24 +96,6 @@ const TrackControls = () => {
     if (window.confirm("Are you sure you want to remove this track?"))
       removeTrack(t?.id);
   };
-
-  useEffect(() => {
-    if (containerRef.current) {
-      // Initialize Dragula
-      const drake = dragula([containerRef.current], {
-        direction: "vertical", // Enforce vertical movement
-        moves: (el, container, handle) => {
-          return handle.classList.contains("drag-handle"); // Only allow dragging from handle
-        },
-      });
-
-      drake.on("drop", (el, target, source, sibling) => {
-        setReorderTrackElement(Array.from(target.children));
-      });
-
-      return () => drake.destroy();
-    }
-  }, [stateTracks]);
 
   useEffect(() => {
     if (!reOrderTrackElem?.length) return;
