@@ -8,6 +8,7 @@ export const MultiTrackInitFn = (
     setMultitrack = () => {},
     setIsReady = () => {},
     setTrackStartPosition = () => {},
+    setPlayStatus = () => {},
   },
   previousTracks = []
 ) => {
@@ -15,6 +16,8 @@ export const MultiTrackInitFn = (
     multiTrackInit?.destroy();
     setIsReady(false);
   }
+
+  setPlayStatus("none");
 
   const multitrack = createMuiltiTrack(previousTracks);
 
@@ -48,6 +51,7 @@ export const addToMultiTrack = ({
   setIsReady = () => {},
   setTracks = () => {},
   setTrackStartPosition = () => {},
+  setPlayStatus = () => {},
 }) => {
   if (!multitrack) throw new Error(`No multitrack found`);
   if (!url) throw new Error(`No audio url found for ${url}`);
@@ -81,6 +85,7 @@ export const addToMultiTrack = ({
       setMultitrack,
       setIsReady,
       setTrackStartPosition,
+      setPlayStatus,
     },
     previousTrack
   );
@@ -95,6 +100,7 @@ export const removeFromMultiTrack = ({
   setMultitrack = () => {},
   setIsReady = () => {},
   setTrackStartPosition = () => {},
+  setPlayStatus = () => {},
 }) => {
   if (!multitrack) throw new Error(`No multitrack found`);
   if (typeof id !== "number") throw new Error(`No track id found for ${id}`);
@@ -112,6 +118,7 @@ export const removeFromMultiTrack = ({
       setMultitrack,
       setIsReady,
       setTrackStartPosition,
+      setPlayStatus,
     },
     filteredTracks
   );
@@ -228,6 +235,7 @@ export const reorderTrackList = ({
   setIsReady = () => {},
   setMultitrack = () => {},
   setTrackStartPosition = () => {},
+  setPlayStatus = () => {},
   newList,
   setTracks,
 }) => {
@@ -244,6 +252,7 @@ export const reorderTrackList = ({
       setMultitrack,
       setIsReady,
       setTrackStartPosition,
+      setPlayStatus,
     },
     newList
   );

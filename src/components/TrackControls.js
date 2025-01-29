@@ -51,6 +51,10 @@ const TrackControls = () => {
     dispatch({ type: "TRACKS_START_POSITION_UPDATE", payload: value });
   };
 
+  const setPlayStatus = (value) => {
+    dispatch({ type: "SET_PLAY_STATUS", payload: value });
+  };
+
   useEffect(() => {
     if (!reOrderTrackElem?.length) return;
 
@@ -61,14 +65,13 @@ const TrackControls = () => {
       setIsReady,
       setMultitrack,
       setTrackStartPosition,
+      setPlayStatus,
     });
   }, [reOrderTrackElem]);
 
   return (
     <div ref={containerRef}>
       {stateTracks.map((t, index) => {
-        const volume = t?.volume * 100;
-
         return (
           <div
             className="w-100 h-[130px] border-b-[2px] border-b-[#888] relative flex align-center px-2 justify-between bg-[#2d2d2d]"
