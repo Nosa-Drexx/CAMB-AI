@@ -154,7 +154,7 @@ export const forwardTimeBy = ({ multitrack, isReady }, forwardBy = 30) => {
 export const backwardTimeBy = ({ multitrack, isReady }, backwardBy = 30) => {
   if (!multitrack) throw new Error(`No multitrack found`);
 
-  const updateSeek = Math.min(multitrack.getCurrentTime() + backwardBy, 0);
+  const updateSeek = Math.max(multitrack.getCurrentTime() + backwardBy, 0);
 
   if (isReady) multitrack.setTime(updateSeek);
 };
