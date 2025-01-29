@@ -1,5 +1,7 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+Open [https://multitrack-mix.netlify.app/](https://multitrack-mix.netlify.app/) with your browser to see Live app.
+
 ## Getting Started
 
 First, Install Dependencies:

@@ -1,26 +1,16 @@
 "use client";
 import { useMultitrackContext } from "@/hooks/multitrack-hook";
-import { Trash, Volume2, VolumeX, Volume1, GripVertical } from "lucide-react";
-import CustomRange from "./CustomRange";
-import {
-  removeFromMultiTrack,
-  reorderTrackList,
-  updateVolume,
-} from "@/lib/wavesufer-multitrack";
+import { GripVertical } from "lucide-react";
+import { reorderTrackList } from "@/lib/wavesufer-multitrack";
 import { useEffect, useRef, useState } from "react";
 import Sortable from "sortablejs";
 
 const TrackControls = () => {
   const { state, dispatch } = useMultitrackContext();
-  const isReady = state.isReady;
   const multitrack = state.multitrack;
   const stateTracks = state.tracks;
   const containerRef = useRef(null);
   const [reOrderTrackElem, setReorderTrackElement] = useState([]);
-
-  const tracks = stateTracks.filter((t) => {
-    return t.id !== "placeholder";
-  });
 
   useEffect(() => {
     if (containerRef.current) {
@@ -61,40 +51,8 @@ const TrackControls = () => {
     dispatch({ type: "TRACKS_START_POSITION_UPDATE", payload: value });
   };
 
-  const updateTrackVolume = (value, index, t) => {
-    const rangeValue = value;
-    updateVolume({
-      multitrack,
-      isReady,
-      volume: rangeValue / 100,
-      setTracks,
-      index,
-      updateState: true,
-      stateTrackList: state?.tracks,
-    });
-  };
-
-  const removeTrack = (id) => {
-    removeFromMultiTrack({
-      multitrack,
-      id,
-      prevTracks: stateTracks,
-      setTracks,
-      setMultitrack,
-      setIsReady,
-      setTrackStartPosition,
-    });
-  };
-
-  const handleDeleteTrack = (t) => {
-    if (window.confirm("Are you sure you want to remove this track?"))
-      removeTrack(t?.id);
-  };
-
   useEffect(() => {
     if (!reOrderTrackElem?.length) return;
-
-    console.log(reOrderTrackElem, "updated list");
 
     reorderTrackList({
       multitrack,
@@ -117,54 +75,9 @@ const TrackControls = () => {
             key={index}
             data-id={t?.id}
           >
-            <div className="w-fit h-fit my-auto">
-              <CustomRange
-                value={volume}
-                onRangeUpdate={(val) => updateTrackVolume(val, t?.id, t)}
-                disabled={!isReady || !tracks?.length}
-                topOrder="-10%"
-                leftOrder="-200%"
-              >
-                {volume < 1 ? (
-                  <VolumeX
-                    size={24}
-                    color="white"
-                    disabled={!isReady || !tracks?.length}
-                    className="transition-transform duration-200 hover:scale-110 disabled:cursor-not-allowed"
-                  />
-                ) : volume < 50 ? (
-                  <Volume1
-                    size={24}
-                    color="white"
-                    disabled={!isReady || !tracks?.length}
-                    className="transition-transform duration-200 hover:scale-110 disabled:cursor-not-allowed"
-                  />
-                ) : (
-                  <Volume2
-                    size={24}
-                    color="white"
-                    disabled={!isReady || !tracks?.length}
-                    className="transition-transform duration-200 hover:scale-110 disabled:cursor-not-allowed"
-                  />
-                )}
-              </CustomRange>
-            </div>
-            <div className="w-fit h-fit my-auto">
-              <button
-                onClick={() => handleDeleteTrack(t)}
-                disabled={!isReady || !tracks?.length}
-              >
-                <Trash
-                  size={24}
-                  color="white"
-                  className="transition-transform duration-200 hover:scale-110 disabled:cursor-not-allowed"
-                  disabled={!isReady || !tracks?.length}
-                />
-              </button>
-            </div>
-            <button className="drag-handle">
+            <button className="drag-handle mx-auto">
               <GripVertical
-                size={24}
+                size={32}
                 color="gray"
                 className="cursor-grab drag-handle"
               />
