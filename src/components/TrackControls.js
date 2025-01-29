@@ -1,5 +1,4 @@
 "use client";
-import dynamic from "next/dynamic";
 import { useMultitrackContext } from "@/hooks/multitrack-hook";
 import { Trash, Volume2, VolumeX, Volume1, GripVertical } from "lucide-react";
 import CustomRange from "./CustomRange";
@@ -9,8 +8,7 @@ import {
   updateVolume,
 } from "@/lib/wavesufer-multitrack";
 import { useEffect, useRef, useState } from "react";
-const dragula = dynamic(() => import("dragula"), { ssr: false });
-import "dragula/dist/dragula.css";
+import Sortable from "sortablejs";
 
 const TrackControls = () => {
   const { state, dispatch } = useMultitrackContext();
@@ -19,37 +17,33 @@ const TrackControls = () => {
   const stateTracks = state.tracks;
   const containerRef = useRef(null);
   const [reOrderTrackElem, setReorderTrackElement] = useState([]);
-  const [dragulaInstance, setDragulaInstance] = useState(null);
-
-  //initialize dragula
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      import("dragula").then((dragula) => {
-        setDragulaInstance(() => dragula.default); // Store the function reference
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    if (containerRef.current && dragulaInstance) {
-      const drake = dragulaInstance([containerRef.current], {
-        direction: "vertical", // Enforce vertical movement
-        moves: (el, container, handle) => {
-          return handle.classList.contains("drag-handle"); // Only allow dragging from handle
-        },
-      });
-
-      drake.on("drop", (el, target, source, sibling) => {
-        setReorderTrackElement(Array.from(target.children));
-      });
-
-      return () => drake.destroy();
-    }
-  }, [dragulaInstance, stateTracks]);
 
   const tracks = stateTracks.filter((t) => {
     return t.id !== "placeholder";
   });
+
+  useEffect(() => {
+    if (containerRef.current) {
+      const sortable = new Sortable(containerRef.current, {
+        animation: 150, // Smooth animation
+        handle: ".drag-handle", // Drag only by handle
+        direction: "vertical",
+        onEnd: (evt) => {
+          const { oldIndex, newIndex } = evt;
+          if (oldIndex !== newIndex) {
+            // Reorder tracks in state
+            const updatedTracks = [...stateTracks];
+            const [movedItem] = updatedTracks.splice(oldIndex, 1);
+            updatedTracks.splice(newIndex, 0, movedItem);
+
+            setReorderTrackElement(updatedTracks);
+          }
+        },
+      });
+
+      return () => sortable.destroy();
+    }
+  }, [stateTracks]);
 
   const setTracks = (value) => {
     dispatch({ type: "SET_TRACKS", payload: value });
@@ -67,7 +61,7 @@ const TrackControls = () => {
     dispatch({ type: "TRACKS_START_POSITION_UPDATE", payload: value });
   };
 
-  const updateTrackVolume = (value, index) => {
+  const updateTrackVolume = (value, index, t) => {
     const rangeValue = value;
     updateVolume({
       multitrack,
@@ -100,15 +94,11 @@ const TrackControls = () => {
   useEffect(() => {
     if (!reOrderTrackElem?.length) return;
 
-    const updatedList = reOrderTrackElem.map((child) => {
-      return tracks.find(
-        (item) => Number(item.id) === Number(child.dataset.id)
-      );
-    });
+    console.log(reOrderTrackElem, "updated list");
 
     reorderTrackList({
       multitrack,
-      newList: updatedList,
+      newList: reOrderTrackElem,
       setTracks,
       setIsReady,
       setMultitrack,
@@ -118,18 +108,19 @@ const TrackControls = () => {
 
   return (
     <div ref={containerRef}>
-      {tracks.map((t, index) => {
+      {stateTracks.map((t, index) => {
         const volume = t?.volume * 100;
+
         return (
           <div
             className="w-100 h-[130px] border-b-[2px] border-b-[#888] relative flex align-center px-2 justify-between bg-[#2d2d2d]"
-            key={t?.id ?? index}
+            key={index}
             data-id={t?.id}
           >
             <div className="w-fit h-fit my-auto">
               <CustomRange
                 value={volume}
-                onRangeUpdate={(val) => updateTrackVolume(val, t?.id)}
+                onRangeUpdate={(val) => updateTrackVolume(val, t?.id, t)}
                 disabled={!isReady || !tracks?.length}
                 topOrder="-10%"
                 leftOrder="-200%"
