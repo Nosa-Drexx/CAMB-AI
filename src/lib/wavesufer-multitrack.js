@@ -3,7 +3,12 @@ import { getRandomSolidColor } from "./random";
 
 //initialize track
 export const MultiTrackInitFn = (
-  { multiTrackInit, setMultitrack = () => {}, setIsReady = () => {} },
+  {
+    multiTrackInit,
+    setMultitrack = () => {},
+    setIsReady = () => {},
+    setTrackStartPosition = () => {},
+  },
   previousTracks = []
 ) => {
   if (multiTrackInit) {
@@ -15,6 +20,10 @@ export const MultiTrackInitFn = (
 
   multitrack.once("canplay", async () => {
     setIsReady(true);
+  });
+
+  multitrack.on("start-position-change", async (value) => {
+    setTrackStartPosition(value);
   });
 
   //udate trrack volume if previous track exist
@@ -38,6 +47,7 @@ export const addToMultiTrack = ({
   setMultitrack = () => {},
   setIsReady = () => {},
   setTracks = () => {},
+  setTrackStartPosition = () => {},
 }) => {
   if (!multitrack) throw new Error(`No multitrack found`);
   if (!url) throw new Error(`No audio url found for ${url}`);
@@ -70,6 +80,7 @@ export const addToMultiTrack = ({
       multiTrackInit: multitrack,
       setMultitrack,
       setIsReady,
+      setTrackStartPosition,
     },
     previousTrack
   );
@@ -83,6 +94,7 @@ export const removeFromMultiTrack = ({
   setTracks = () => {},
   setMultitrack = () => {},
   setIsReady = () => {},
+  setTrackStartPosition = () => {},
 }) => {
   if (!multitrack) throw new Error(`No multitrack found`);
   if (typeof id !== "number") throw new Error(`No track id found for ${id}`);
@@ -99,6 +111,7 @@ export const removeFromMultiTrack = ({
       multiTrackInit: multitrack,
       setMultitrack,
       setIsReady,
+      setTrackStartPosition,
     },
     filteredTracks
   );
@@ -203,10 +216,37 @@ export const updateVolumeAll = ({
   setTracks(tracks);
 };
 
+//zoom track
 export const zoomTrack = ({ multitrack, isReady, zoomBy = 10 }) => {
   if (!multitrack) throw new Error(`No multitrack found`);
   if (!isReady) return;
   multitrack.zoom(zoomBy);
+};
+
+export const reorderTrackList = ({
+  multitrack,
+  setIsReady = () => {},
+  setMultitrack = () => {},
+  setTrackStartPosition = () => {},
+  newList,
+  setTracks,
+}) => {
+  if (!multitrack) throw new Error(`No multitrack found`);
+  if (!Array.isArray(newList))
+    throw new Error(`Expect newList params to be a typeof array`);
+
+  if (setTracks) setTracks(newList);
+
+  //reintitalize multi-track with new track.
+  MultiTrackInitFn(
+    {
+      multiTrackInit: multitrack,
+      setMultitrack,
+      setIsReady,
+      setTrackStartPosition,
+    },
+    newList
+  );
 };
 
 //create multi track
@@ -232,29 +272,3 @@ const createMuiltiTrack = (track = []) => {
 
   return multitrack;
 };
-
-// useEffect(() => {
-//   if (isReady && multitrack) {
-//     // Target the container where WaveSurfer creates its tracks
-//     const trackContainer = document.querySelector("#audio-pill-container")
-//       ?.children[0]?.children[0];
-//     console.log(trackContainer, "track container");
-
-//     if (trackContainer) {
-//       Sortable.create(trackContainer, {
-//         animation: 150,
-//         direction: "vertical",
-//         onEnd: function (evt) {
-//           console.log(evt, "evt");
-//           // const tracks = multitrack.getTracks();
-//           // const movedTrack = tracks[evt.oldIndex];
-//           // // Remove track from old position and insert at new position
-//           // tracks.splice(evt.oldIndex, 1);
-//           // tracks.splice(evt.newIndex, 0, movedTrack);
-//           // // Update WaveSurfer's track order
-//           // multitrack.reorder(tracks);
-//         },
-//       });
-//     }
-//   }
-// }, [isReady, multitrack]);

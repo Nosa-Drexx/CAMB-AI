@@ -9,12 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "dragula": "^3.7.3",
     "lucide-react": "^0.474.0",
     "next": "15.1.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-dropzone": "^14.3.5",
-    "sortablejs": "^1.15.6",
     "wavesurfer-multitrack": "^0.4.12",
     "wavesurfer.js": "^7.8.17"
   },

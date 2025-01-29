@@ -26,6 +26,10 @@ export default function Home() {
     dispatch({ type: "SET_TRACKS", payload: value });
   };
 
+  const setTrackStartPosition = (value) => {
+    dispatch({ type: "TRACKS_START_POSITION_UPDATE", payload: value });
+  };
+
   //initiallize multitrack
   useEffect(() => {
     MultiTrackInitFn({
@@ -33,6 +37,7 @@ export default function Home() {
       setMultitrack,
       setIsReady,
       setTracks,
+      setTrackStartPosition,
     });
 
     // Multitrack   clean up
@@ -50,6 +55,7 @@ export default function Home() {
       setMultitrack,
       setIsReady,
       setTracks,
+      setTrackStartPosition,
     });
   };
 

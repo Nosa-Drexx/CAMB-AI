@@ -19,6 +19,14 @@ function multitrackReducer(state, action) {
       return { ...state, playStatus: action.payload };
     case "SET_TRACKS":
       return { ...state, tracks: action.payload };
+    case "TRACKS_START_POSITION_UPDATE":
+      const tracks = state.tracks.map((track) => {
+        if (Number(track.id) === Number(action.payload.id)) {
+          return { ...track, startPosition: action.payload.startPosition };
+        }
+        return track;
+      });
+      return { ...state, tracks };
     default:
       return state;
   }
