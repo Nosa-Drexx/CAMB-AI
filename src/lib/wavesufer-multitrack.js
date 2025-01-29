@@ -216,7 +216,7 @@ export const updateVolumeAll = ({
     });
   });
 
-  const tracks = multitrack?.tracks?.map((track) => {
+  const tracks = multitrackTracks.map((track) => {
     return { ...track, volume };
   });
 
